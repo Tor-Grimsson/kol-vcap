@@ -1,16 +1,8 @@
 ---
 import Default from '../layouts/Default.astro';
-import { readFileSync, statSync, existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import manifest from '../../../manifest.json';
 
-const manifestPath = resolve(import.meta.dirname, '..', '..', '..', 'manifest.json');
-const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
 const version = manifest.version;
-
-const zipPath = resolve(import.meta.dirname, '..', '..', 'public', `vcap-${version}.zip`);
-const zipSizeKB = existsSync(zipPath)
-  ? (statSync(zipPath).size / 1024).toFixed(0)
-  : null;
 
 // Code samples — defined here to avoid JSX brace escaping in the template.
 const quickstartExample = `vcap.start('.dialog', { margin: 20, duration: 5000 })`;
@@ -41,7 +33,6 @@ const recipeFfmpeg = `ffmpeg -i vcap.webm -c:v prores_ks -profile:v 4444 -pix_fm
     <div class="download">
       <a class="download-btn" href={`/vcap-${version}.zip`} download>
         [download] vcap-{version}.zip
-        {zipSizeKB && <span class="size">~{zipSizeKB} KB</span>}
       </a>
       <p class="muted">chromium extension — unpacked install. chrome, edge, brave, arc, vivaldi, opera.</p>
     </div>
