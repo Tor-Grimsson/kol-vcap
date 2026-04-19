@@ -1,0 +1,125 @@
+---
+import '../styles/globals.css';
+
+interface Props {
+  title: string;
+  version?: string;
+  description?: string;
+}
+
+const { title, version, description = 'skinless tab recording, driven from the devtools console.' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="layout">
+      <nav class="nav">
+        <div class="brand">
+          <span class="dot"></span>
+          <span class="brand-name">vcap</span>
+          {version && <span class="brand-version">v{version}</span>}
+        </div>
+        <div class="nav-section">
+          <div class="nav-group">setup</div>
+          <ul>
+            <li><a href="#download">download</a></li>
+            <li><a href="#install">install</a></li>
+            <li><a href="#source">source</a></li>
+          </ul>
+        </div>
+        <div class="nav-divider"></div>
+        <div class="nav-section">
+          <div class="nav-group">settings</div>
+          <ul>
+            <li><a href="#quickstart">quickstart</a></li>
+            <li><a href="#api">api</a></li>
+            <li><a href="#options">options</a></li>
+            <li><a href="#hotkey">hotkey</a></li>
+            <li><a href="#recipes">recipes</a></li>
+            <li><a href="#notes">notes</a></li>
+          </ul>
+        </div>
+      </nav>
+      <main class="main">
+        <slot />
+        <footer class="site-footer">
+          <a href="https://kolkrabbi.io" class="footer-brand" aria-label="Kolkrabbi Vinnustofa">
+            <img src="/favicon.svg" alt="" width="40" height="40" />
+          </a>
+          <p class="footer-text">
+            <a href="https://kolkrabbi.io">Kolkrabbi Vinnustofa</a> 2026
+          </p>
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      // Scrollspy: highlight the sidebar link whose section is currently in view.
+      const sections = document.querySelectorAll<HTMLElement>('main section[id]');
+      const links = document.querySelectorAll<HTMLAnchorElement>('.nav-section ul a');
+
+      const byId = new Map<string, HTMLAnchorElement>();
+      links.forEach((a) => {
+        const id = a.getAttribute('href')?.replace('#', '');
+        if (id) byId.set(id, a);
+      });
+
+      const setActive = (id: string) => {
+        links.forEach((l) => l.classList.remove('active'));
+        byId.get(id)?.classList.add('active');
+      };
+
+      // First/last sections can't reach the middle trigger band when the
+      // user is at page edges. Lock the active link to first/last when we
+      // detect we're at those edges, and let the observer handle everything
+      // in between.
+      let edgeLock: 'top' | 'bottom' | null = null;
+
+      const checkEdges = () => {
+        const atTop = window.scrollY < 100;
+        const atBottom =
+          window.scrollY + window.innerHeight >=
+          document.documentElement.scrollHeight - 80;
+        if (atTop) {
+          edgeLock = 'top';
+          if (sections[0]) setActive(sections[0].id);
+        } else if (atBottom) {
+          edgeLock = 'bottom';
+          const last = sections[sections.length - 1];
+          if (last) setActive(last.id);
+        } else {
+          edgeLock = null;
+        }
+      };
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (edgeLock) return;
+          // Pick the topmost intersecting section — handles fast scrolls
+          // where multiple fire at once.
+          const visible = entries
+            .filter((e) => e.isIntersecting)
+            .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+          if (visible[0]) setActive(visible[0].target.id);
+        },
+        {
+          // Trigger when a section crosses the upper-middle band of the viewport.
+          rootMargin: '-30% 0px -60% 0px',
+          threshold: 0,
+        },
+      );
+
+      sections.forEach((s) => observer.observe(s));
+      window.addEventListener('scroll', checkEdges, { passive: true });
+      checkEdges(); // initial pass so the top state is correct on load
+    </script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "vcap-web",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "predev": "node scripts/pack-extension.mjs",
+    "prebuild": "node scripts/pack-extension.mjs",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^6.1.8"
+  }
+}

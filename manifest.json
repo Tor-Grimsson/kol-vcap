@@ -1,0 +1,66 @@
+{
+  "manifest_version": 3,
+  "name": "vcap",
+  "version": "0.1.0",
+  "description": "Console-driven skinless tab recording. Type vcap.start() in DevTools, hit the hotkey to record.",
+
+  "permissions": [
+    "tabCapture",
+    "activeTab",
+    "offscreen",
+    "storage",
+    "downloads",
+    "scripting"
+  ],
+
+  "host_permissions": ["<all_urls>"],
+
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-main.js"],
+      "world": "MAIN",
+      "run_at": "document_start",
+      "all_frames": false
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-isolated.js"],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+
+  "commands": {
+    "toggle-recording": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+V",
+        "mac": "Command+Shift+V"
+      },
+      "description": "Start or stop vcap recording"
+    }
+  },
+
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+
+  "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["options/options.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

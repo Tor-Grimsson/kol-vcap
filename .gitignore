@@ -1,0 +1,30 @@
+# macos
+.DS_Store
+
+# dependency dirs (anywhere in tree)
+node_modules/
+
+# env files (never commit secrets, always commit examples)
+.env
+.env.*
+!.env.example
+
+# editor / IDE
+.idea/
+.vscode/
+
+# --- web subproject (Astro) ---
+
+# build output
+web/dist/
+web/.astro/
+
+# generated extension zips (rebuilt on every deploy)
+web/public/vcap-*.zip
+
+
+# otr
+.a-torg/
+.claude/
+docs/
+LLM_RULES.md

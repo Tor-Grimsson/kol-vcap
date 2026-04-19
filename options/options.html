@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>vcap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <nav class="nav">
+        <div class="brand">
+          <span class="dot"></span>
+          <span class="brand-name">vcap</span>
+          <span class="brand-version" id="version">v0.1.0</span>
+        </div>
+        <ul>
+          <li><a href="#quickstart">quickstart</a></li>
+          <li><a href="#api">api</a></li>
+          <li><a href="#options">options</a></li>
+          <li><a href="#defaults">defaults</a></li>
+          <li><a href="#hotkey">hotkey</a></li>
+          <li><a href="#capabilities">capabilities</a></li>
+          <li><a href="#recipes">recipes</a></li>
+          <li><a href="#history">history</a></li>
+          <li><a href="#notes">notes</a></li>
+        </ul>
+      </nav>
+
+      <main class="main">
+        <header class="title">
+          <h1>vcap</h1>
+          <p class="tagline">skinless tab recording, driven from the devtools console.</p>
+        </header>
+
+        <!-- QUICKSTART -->
+        <section id="quickstart">
+          <h2>&gt; quickstart</h2>
+          <ol class="steps">
+            <li>
+              open devtools on any page
+              <span class="kbd">⌘⌥I</span>
+              <span class="sep">/</span>
+              <span class="kbd">F12</span>
+              → console tab
+            </li>
+            <li>
+              type a command and press enter
+              <pre class="code"><code>vcap.start('.dialog', { margin: 20, duration: 5000 })</code></pre>
+            </li>
+            <li>
+              press the hotkey to begin. recording auto-stops after the duration
+              (or press the hotkey again to stop manually). file downloads.
+            </li>
+          </ol>
+        </section>
+
+        <!-- API -->
+        <section id="api">
+          <h2>&gt; api</h2>
+
+          <dl class="api-list">
+            <dt><code>vcap.start(selector?, options?)</code></dt>
+            <dd>
+              arm a capture. validates the selector and options, applies isolation/scroll,
+              and stores the pending config. press the hotkey to actually begin recording.
+              <br />
+              accepts either <code>vcap.start('.selector', {…})</code> or
+              <code>vcap.start({ selector: '.x', … })</code>.
+              <br />
+              omit <code>selector</code> (or pass no args) to record the entire viewport.
+            </dd>
+
+            <dt><code>vcap.stop()</code></dt>
+            <dd>
+              stop the current recording. equivalent to pressing the hotkey while recording.
+              if auto-stop (<code>duration</code>) is set, this isn't needed.
+            </dd>
+
+            <dt><code>vcap.config(options)</code></dt>
+            <dd>
+              set per-session defaults in the current page. later calls to
+              <code>vcap.start()</code> inherit these unless overridden.
+              returns the merged config.
+            </dd>
+
+            <dt><code>vcap.status()</code></dt>
+            <dd>
+              returns <code>{ mode: 'idle' | 'armed' | 'recording' }</code>.
+            </dd>
+
+            <dt><code>vcap.capabilities()</code></dt>
+            <dd>
+              returns the current browser's encoder support:
+              <code>{ mp4H264, webmVp9, webmVp8, webmAlpha }</code>.
+            </dd>
+
+            <dt><code>vcap.help()</code></dt>
+            <dd>print a compact reference to the console.</dd>
+          </dl>
+        </section>
+
+        <!-- OPTIONS -->
+        <section id="options">
+          <h2>&gt; options</h2>
+          <table class="opts">
+            <thead>
+              <tr>
+                <th>name</th>
+                <th>type</th>
+                <th>default</th>
+                <th>notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>selector</code></td>
+                <td>string | null</td>
+                <td>null</td>
+                <td>css selector. must match exactly one element. null = full viewport.</td>
+              </tr>
+              <tr>
+                <td><code>margin</code></td>
+                <td>number</td>
+                <td>0</td>
+                <td>css px of surrounding context added to the crop rect.</td>
+              </tr>
+              <tr>
+                <td><code>scale</code></td>
+                <td>0.5 | 1 | 2</td>
+                <td>2</td>
+                <td>
+                  output px per css px. capped at device dpr (retina = 2).
+                  use <code>1</code> or <code>0.5</code> for smaller files.
+                </td>
+              </tr>
+              <tr>
+                <td><code>duration</code></td>
+                <td>number | null</td>
+                <td>null</td>
+                <td>milliseconds. null = manual stop via hotkey or <code>vcap.stop()</code>.</td>
+              </tr>
+              <tr>
+                <td><code>format</code></td>
+                <td>'auto' | 'mp4' | 'webm'</td>
+                <td>'auto'</td>
+                <td>
+                  auto picks mp4/h264 when opaque, webm/vp9 when transparent.
+                  mp4 has no alpha — transparent recording forces webm.
+                </td>
+              </tr>
+              <tr>
+                <td><code>isolate</code></td>
+                <td>false | 'hide' | 'clone'</td>
+                <td>false</td>
+                <td>
+                  false = record in-context. 'hide' hides other elements via visibility.
+                  'clone' is reserved (falls back to 'hide' in v0.1).
+                </td>
+              </tr>
+              <tr>
+                <td><code>background</code></td>
+                <td>string | null</td>
+                <td>null</td>
+                <td>
+                  only valid with <code>isolate</code>. <code>'transparent'</code>
+                  forces webm. otherwise a css color string.
+                </td>
+              </tr>
+              <tr>
+                <td><code>stripEffects</code></td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>
+                  removes <code>filter</code>, <code>backdrop-filter</code>,
+                  <code>box-shadow</code>, <code>mix-blend-mode</code> on ancestors
+                  of the target. recompose in post.
+                </td>
+              </tr>
+              <tr>
+                <td><code>scrollIntoView</code></td>
+                <td>boolean</td>
+                <td>true</td>
+                <td>scrolls the target into the viewport before arming.</td>
+              </tr>
+              <tr>
+                <td><code>filename</code></td>
+                <td>string | null</td>
+                <td>null</td>
+                <td>output filename without extension. null = timestamped.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- DEFAULTS -->
+        <section id="defaults">
+          <h2>&gt; defaults</h2>
+          <p class="muted">
+            applied to every <code>vcap.start()</code> call that omits these options.
+            per-page overrides via <code>vcap.config()</code> still apply on top.
+          </p>
+          <form class="defaults-form" id="defaults-form">
+            <div class="field">
+              <label for="d-scale">scale</label>
+              <select id="d-scale" name="scale">
+                <option value="0.5">0.5</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="d-format">format</label>
+              <select id="d-format" name="format">
+                <option value="auto">auto</option>
+                <option value="mp4">mp4</option>
+                <option value="webm">webm</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="d-margin">margin</label>
+              <input id="d-margin" name="margin" type="number" min="0" step="1" />
+            </div>
+            <div class="field">
+              <label for="d-scrollIntoView">scrollIntoView</label>
+              <select id="d-scrollIntoView" name="scrollIntoView">
+                <option value="true">true</option>
+                <option value="false">false</option>
+              </select>
+            </div>
+            <div class="actions">
+              <button type="submit">save</button>
+              <button type="button" id="reset-defaults">reset</button>
+              <span class="status" id="defaults-status"></span>
+            </div>
+          </form>
+        </section>
+
+        <!-- HOTKEY -->
+        <section id="hotkey">
+          <h2>&gt; hotkey</h2>
+          <p>
+            current binding:
+            <span class="kbd" id="current-hotkey">unknown</span>
+          </p>
+          <p class="muted">
+            rebinding lives in chrome's native shortcut manager — it's authoritative,
+            so vcap doesn't try to reimplement it.
+          </p>
+          <p>
+            <a href="#" id="open-shortcuts">open chrome://extensions/shortcuts →</a>
+          </p>
+        </section>
+
+        <!-- CAPABILITIES -->
+        <section id="capabilities">
+          <h2>&gt; capabilities</h2>
+          <p class="muted">what your browser supports right now.</p>
+          <table class="caps">
+            <tbody id="caps-body">
+              <tr>
+                <td colspan="2" class="muted">probing…</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- RECIPES -->
+        <section id="recipes">
+          <h2>&gt; recipes</h2>
+
+          <div class="recipe">
+            <h3>record a dialog with context</h3>
+            <pre class="code"
+              data-copy><code>vcap.start('.dialog', { margin: 20, duration: 5000 })</code></pre>
+          </div>
+
+          <div class="recipe">
+            <h3>transparent capture of an isolated element</h3>
+            <pre class="code"
+              data-copy><code>vcap.start('button.primary', {
+  isolate: 'hide',
+  background: 'transparent',
+  stripEffects: true,
+  margin: 12
+})</code></pre>
+          </div>
+
+          <div class="recipe">
+            <h3>quarter-size quick test</h3>
+            <pre class="code"
+              data-copy><code>vcap.start('.hero', { scale: 0.5, duration: 2000 })</code></pre>
+          </div>
+
+          <div class="recipe">
+            <h3>full viewport, manual stop</h3>
+            <pre class="code"
+              data-copy><code>vcap.start()</code></pre>
+          </div>
+
+          <div class="recipe">
+            <h3>pin session defaults (this page only)</h3>
+            <pre class="code"
+              data-copy><code>vcap.config({ scale: 1, format: 'webm', margin: 16 })</code></pre>
+          </div>
+
+          <div class="recipe">
+            <h3>transcode webm → prores 4444 for editing</h3>
+            <pre class="code"
+              data-copy><code>ffmpeg -i vcap.webm -c:v prores_ks -profile:v 4444 -pix_fmt yuva444p10le out.mov</code></pre>
+          </div>
+        </section>
+
+        <!-- HISTORY -->
+        <section id="history">
+          <h2>&gt; history</h2>
+          <p class="muted">last 50 recordings. stored locally, never transmitted.</p>
+          <div id="history-body">
+            <p class="muted">loading…</p>
+          </div>
+          <div class="actions">
+            <button type="button" id="clear-history">clear</button>
+          </div>
+        </section>
+
+        <!-- NOTES -->
+        <section id="notes">
+          <h2>&gt; notes</h2>
+          <ul class="notes">
+            <li>
+              vcap needs <code>&lt;all_urls&gt;</code> content scripts so
+              <code>window.vcap</code> is present in every page's console.
+              no network access, no page data is transmitted.
+            </li>
+            <li>
+              starting a recording requires a user gesture (the hotkey).
+              console calls to <code>vcap.start()</code> can't start tabCapture
+              directly — chrome blocks that for security.
+            </li>
+            <li>
+              mp4 in-browser (h264) does not support alpha. transparent output
+              is always webm; transcode to prores 4444 if you need a
+              davinci-friendly alpha file.
+            </li>
+            <li>
+              <code>scale</code> above device dpr (supersampling via the chrome
+              debugger api) is not in v0.1. retina gives you 2x for free.
+            </li>
+            <li>
+              built for chromium browsers. not compatible with firefox or safari.
+            </li>
+          </ul>
+        </section>
+      </main>
+    </div>
+
+    <script src="options.js" type="module"></script>
+  </body>
+</html>
