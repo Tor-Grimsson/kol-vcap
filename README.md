@@ -7,12 +7,19 @@ vcap.start('.dialog', { margin: 20, duration: 5000 })
 → press ⌘⇧V (mac) / Ctrl+Shift+V (win/linux) to begin
 ```
 
-## install (dev / unpacked)
+## install
 
-1. Open `chrome://extensions`
-2. Toggle **Developer mode** (top right)
-3. **Load unpacked** → select this folder
-4. Open any page, open DevTools → Console, type `vcap.help()`
+Two paths, same end result.
+
+**From the landing page** (once deployed — see `web/`): download the versioned zip, unzip, and `Load unpacked` in `chrome://extensions` pointed at the unzipped folder.
+
+**From source (dev)**:
+
+1. Clone the repo
+2. Open `chrome://extensions`
+3. Toggle **Developer mode** (top right)
+4. **Load unpacked** → select this folder
+5. Open any page, open DevTools → Console, type `vcap.help()`
 
 ## file layout
 
@@ -24,8 +31,10 @@ vcap/
 ├── content-isolated.js     ISOLATED-world bridge to the service worker
 ├── offscreen.html/js       MediaRecorder host (MV3 needs a DOM context)
 ├── lib/config.js           shared defaults + storage keys
-├── options/                reference + settings page
-└── icons/                  16/48/128 PNGs
+├── options/                reference + settings page (in-extension)
+├── icons/                  16/48/128 PNGs
+└── web/                    Astro landing page — Vercel deploy; packages the
+                            extension into a versioned zip on every build.
 ```
 
 ## architecture
