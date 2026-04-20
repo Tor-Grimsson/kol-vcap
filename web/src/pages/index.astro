@@ -56,11 +56,20 @@ const recipeFfmpeg = `ffmpeg -i vcap.webm -c:v prores_ks -profile:v 4444 -pix_fm
   <section id="source">
     <h2>source</h2>
     <ul class="notes">
-      <li>github: link tbd</li>
+      <li>
+        github:
+        <a href="https://github.com/Tor-Grimsson/kol-vcap" target="_blank" rel="noopener">
+          github.com/Tor-Grimsson/kol-vcap
+        </a>
+      </li>
       <li>issues, pull requests, and feature discussion live on the repo</li>
       <li>console reference: <code>vcap.help()</code> inside any devtools console after install</li>
     </ul>
   </section>
+
+  <figure class="screenshot">
+    <img src="/vcap-ss.png" alt="vcap console output in Chrome DevTools" width="2560" height="1008" loading="lazy" />
+  </figure>
 
   <hr class="section-divider" />
 
@@ -302,5 +311,42 @@ const recipeFfmpeg = `ffmpeg -i vcap.webm -c:v prores_ks -profile:v 4444 -pix_fm
         defaults form, capabilities probe, recording history.
       </li>
     </ul>
+  </section>
+
+  <hr class="section-divider" />
+
+  <section>
+    <h2>links</h2>
+    <dl class="link-list">
+      <dt>
+        <a href="https://vcap.kolkrabbi.io">vcap</a>
+        <span class="lnk-url">[vcap.kolkrabbi.io]</span>
+      </dt>
+      <dd>
+        the landing page you're on. hosted on vercel, packages the extension
+        into a versioned zip on every deploy.
+      </dd>
+
+      <dt>
+        <a href="https://github.com/Tor-Grimsson/kol-vcap" target="_blank" rel="noopener">github</a>
+        <span class="lnk-url">[github.com/Tor-Grimsson/kol-vcap]</span>
+      </dt>
+      <dd>source. issues, pull requests, release tags.</dd>
+
+      <dt>
+        <a href="https://kolkrabbi.io" target="_blank" rel="noopener">kolkrabbi</a>
+        <span class="lnk-url">[kolkrabbi.io]</span>
+      </dt>
+      <dd>
+        kolkrabbi vinnustofa — the studio behind vcap and the rest of the
+        kol- toolchain.
+      </dd>
+
+      <dt>
+        <a href="mailto:kolkrabbi@kolkrabbi.io">contact</a>
+        <span class="lnk-url">[kolkrabbi@kolkrabbi.io]</span>
+      </dt>
+      <dd>questions, bugs, feature ideas. direct line.</dd>
+    </dl>
   </section>
 </Default>

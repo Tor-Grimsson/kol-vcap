@@ -11,7 +11,7 @@ vcap.start('.dialog', { margin: 20, duration: 5000 })
 
 Two paths, same end result.
 
-**From the landing page** (once deployed — see `web/`): download the versioned zip, unzip, and `Load unpacked` in `chrome://extensions` pointed at the unzipped folder.
+**From the landing page** at [vcap.kolkrabbi.io](https://vcap.kolkrabbi.io): download the versioned zip, unzip, and `Load unpacked` in `chrome://extensions` pointed at the unzipped folder.
 
 **From source (dev)**:
 

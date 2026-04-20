@@ -23,11 +23,11 @@ const { title, version, description = 'skinless tab recording, driven from the d
   <body>
     <div class="layout">
       <nav class="nav">
-        <div class="brand">
+        <a class="brand" href="#" aria-label="scroll to top">
           <span class="dot"></span>
           <span class="brand-name">vcap</span>
           {version && <span class="brand-version">v{version}</span>}
-        </div>
+        </a>
         <div class="nav-section">
           <div class="nav-group">setup</div>
           <ul>
@@ -48,15 +48,25 @@ const { title, version, description = 'skinless tab recording, driven from the d
             <li><a href="#notes">notes</a></li>
           </ul>
         </div>
+        <div class="nav-divider"></div>
+        <div class="nav-section">
+          <div class="nav-group">links</div>
+          <ul>
+            <li><a href="https://vcap.kolkrabbi.io">vcap</a></li>
+            <li><a href="https://github.com/Tor-Grimsson/kol-vcap" target="_blank" rel="noopener">github</a></li>
+            <li><a href="https://kolkrabbi.io" target="_blank" rel="noopener">kolkrabbi</a></li>
+            <li><a href="mailto:kolkrabbi@kolkrabbi.io">contact</a></li>
+          </ul>
+        </div>
       </nav>
       <main class="main">
         <slot />
         <footer class="site-footer">
-          <a href="https://kolkrabbi.io" class="footer-brand" aria-label="Kolkrabbi Vinnustofa">
+          <a href="https://kolkrabbi.io" class="footer-brand" target="_blank" rel="noopener" aria-label="Kolkrabbi Vinnustofa">
             <img src="/favicon.svg" alt="" width="40" height="40" />
           </a>
           <p class="footer-text">
-            <a href="https://kolkrabbi.io">Kolkrabbi Vinnustofa</a> 2026
+            <a href="https://kolkrabbi.io" target="_blank" rel="noopener">Kolkrabbi Vinnustofa</a> 2026
           </p>
         </footer>
       </main>
@@ -121,6 +131,14 @@ const { title, version, description = 'skinless tab recording, driven from the d
       sections.forEach((s) => observer.observe(s));
       window.addEventListener('scroll', checkEdges, { passive: true });
       checkEdges(); // initial pass so the top state is correct on load
+
+      // Brand wordmark → smooth scroll to top, strip the hash.
+      const brand = document.querySelector<HTMLAnchorElement>('.brand');
+      brand?.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        history.replaceState(null, '', location.pathname);
+      });
     </script>
   </body>
 </html>

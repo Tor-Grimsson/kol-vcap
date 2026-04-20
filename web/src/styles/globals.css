@@ -11,8 +11,8 @@
   --fg-dimmer: #4a4a4a;
   --line: #222;
   --line-2: #2a2a2a;
-  --accent: #ff3b30;
-  --accent-dim: #b32a22;
+  --accent: #E74C3C;
+  --rec: #ff3b30;
   --link: #6b9fff;
 
   --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -57,7 +57,7 @@ code {
 
 pre.code {
   background: var(--bg-3);
-  border-left: 2px solid var(--accent-dim);
+  border-left: 2px solid var(--accent);
   padding: 12px 16px;
   margin: 10px 0;
   overflow-x: auto;
@@ -110,11 +110,15 @@ pre.code[data-copy].copied::after {
   overflow-y: auto;
 }
 
-.brand {
+.nav .brand {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 32px;
+  padding: 0;
+  color: var(--fg);
+  border-bottom: none;
+  font-size: 13px;
 }
 .brand-name {
   font-weight: 700;
@@ -128,7 +132,7 @@ pre.code[data-copy].copied::after {
 .brand .dot {
   width: 8px;
   height: 8px;
-  background: var(--accent);
+  background: var(--rec);
   border-radius: 50%;
   animation: pulse 2.4s ease-in-out infinite;
 }
@@ -203,7 +207,7 @@ section h2::before {
   content: '';
   width: 8px;
   height: 8px;
-  background: var(--accent);
+  background: var(--rec);
   border-radius: 50%;
   animation: pulse 2.4s ease-in-out infinite;
   flex-shrink: 0;
@@ -365,7 +369,7 @@ table.opts td:nth-child(4) {
 .field input:focus,
 .field select:focus {
   outline: none;
-  border-color: var(--accent-dim);
+  border-color: var(--accent);
 }
 
 .actions {
@@ -390,7 +394,7 @@ button:hover {
   border-color: var(--fg-dim);
 }
 button[type='submit'] {
-  border-color: var(--accent-dim);
+  border-color: var(--accent);
   color: var(--accent);
 }
 button[type='submit']:hover {
@@ -523,6 +527,20 @@ table.caps .no {
   margin: 72px 0;
 }
 
+/* screenshot figure */
+.screenshot {
+  margin: 0 0 56px;
+  outline: 1.5px solid var(--accent);
+  outline-offset: 0;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.screenshot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 /* download button — landing-page only */
 .download {
   display: flex;
@@ -533,7 +551,7 @@ table.caps .no {
 .download-btn {
   display: inline-block;
   padding: 14px 20px;
-  border: 1px solid var(--accent-dim);
+  border: 1px solid var(--accent);
   color: var(--accent);
   font-family: var(--mono);
   font-size: 14px;
@@ -554,7 +572,7 @@ table.caps .no {
   margin-left: 8px;
 }
 
-/* site footer — landing page */
+/* site footer — bottom of main content */
 .site-footer {
   margin-top: 120px;
   padding: 48px 0 64px;
@@ -589,6 +607,43 @@ table.caps .no {
 }
 .site-footer .footer-text a:hover {
   border-bottom-color: var(--fg-dim);
+}
+
+/* main-content link list */
+.link-list {
+  margin: 0;
+  padding: 0;
+}
+.link-list dt {
+  margin-top: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.link-list dt:first-child {
+  margin-top: 0;
+}
+.link-list dt a {
+  color: var(--fg);
+  border-bottom: 1px dotted var(--line-2);
+}
+.link-list dt a:hover {
+  border-bottom-color: var(--fg);
+}
+.link-list dt .lnk-url {
+  color: var(--fg-dim);
+  font-weight: 400;
+  font-size: 12px;
+  word-break: break-all;
+}
+.link-list dd {
+  margin: 6px 0 0;
+  padding-left: 16px;
+  color: var(--fg-dim);
+  border-left: 1px solid var(--line);
+  font-size: 12px;
 }
 
 /* responsive */
